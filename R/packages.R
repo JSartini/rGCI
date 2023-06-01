@@ -1,2 +1,2 @@
-#' @importFrom
+#' @importFrom stats spec.pgram
 NULL
