@@ -48,10 +48,10 @@ pgram <- function(ts, arg, options = default_pgram()){
   daily_spec = per_hour*24
   hourly_spec = per_hour
 
-  difference = as.numeric(difftime(arg, c(tail(arg,1), arg[length(arg)]), units = 'mins'))
+  difference = as.numeric(difftime(arg[-1], arg[-length(arg)], units = 'mins'))
 
   # Pad the data
-  num_add = (difference %/% interval) - 1
+  num_add = c(1, (difference %/% interval)) - 1
   indices = which(num_add > 0)
   for_analysis = ts
 
