@@ -30,8 +30,8 @@ default_pgram <- function(){
 #' required, and a set of reasonable defaults is provided by the default_pgram()
 #' function.
 #'
-#' @return Periodogram, list with entries "pgram" - vector of log-periodogram values
-#' and "periods" - vector of periodcities (min) corresponding to those values
+#' @return Periodogram, list with entries "pgram" - vector of log-periodogram values,
+#' "freqs" - vector of frequencies (min ^-1) corresponding to those values
 #'
 #' @export
 #'
@@ -81,8 +81,7 @@ pgram <- function(ts, arg, options = default_pgram()){
                         demean = TRUE, plot = FALSE)
 
   pgram = log(analysis$spec)
-  freqs = analysis$freq
-  periods = interval/freqs
+  freqs = analysis$freq/interval
 
-  return(list(pgram = pgram, periods = periods))
+  return(list(pgram = pgram, freqs = freqs))
 }
