@@ -4,9 +4,10 @@ Version: 0.0.0.9000
 Authors@R: 
     person("Joseph", "Sartini", , "jsartin1@jh.edu", role = c("aut", "cre"))
 Depends: 
-  dplyr,
-  magrittr,
-  readr
+    dplyr,
+    magrittr,
+    R (>= 2.10),
+    readr
 Description: This package facilitates seamless calculation of the log-periodogram 
   for full continuous glucose monitor (CGM) data wear periods, providing reasonable
   setting defaults. These variance decompositions can then be used in the calculation 
