@@ -31,7 +31,7 @@ default_pgram <- function(){
 #' function.
 #'
 #' @return Periodogram, list with entries "pgram" - vector of log-periodogram values
-#' and "freqs" - vector of frequencies corresponding to those values
+#' and "periods" - vector of periodcities (min) corresponding to those values
 #'
 #' @export
 #'
@@ -58,7 +58,7 @@ pgram <- function(ts, arg, options = default_pgram()){
   for(idx in indices){
     # Too large of gaps can result in biased estimates
     if(num_add[idx] > options[["maxgap"]]*daily_spec){
-      break
+      stop("Excessively long gap found in the data")
     }
 
     for_analysis = append(for_analysis, rep(0, num_add[idx]),
@@ -67,7 +67,7 @@ pgram <- function(ts, arg, options = default_pgram()){
 
   # If there is not enough data, the longer signals will be more difficult to discern
   if(length(for_analysis) < (options[["mindata"]]/options[["days"]])*req_num){
-    next
+    stop("Insufficient data length")
   }
 
   spec_data = rep(0, req_num)
@@ -82,6 +82,7 @@ pgram <- function(ts, arg, options = default_pgram()){
 
   pgram = log(analysis$spec)
   freqs = analysis$freq
+  periods = interval/freqs
 
-  return(list(pgram = pgram, freqs = freqs))
+  return(list(pgram = pgram, periods = periods))
 }
