@@ -1,5 +1,5 @@
 test_that("log-periodogram matches previous implementation: AR(1)", {
-  baseline = baseline_output %>%
+  baseline = baseline_pgram %>%
     filter(ID == "full_ar") %>%
     pull(Pgram)
 
@@ -7,7 +7,7 @@ test_that("log-periodogram matches previous implementation: AR(1)", {
 })
 
 test_that("log-periodogram matches previous implementation: MA(1)", {
-  baseline = baseline_output %>%
+  baseline = baseline_pgram %>%
     filter(ID == "full_ma") %>%
     pull(Pgram)
 

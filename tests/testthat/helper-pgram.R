@@ -27,4 +27,5 @@ ins_data_ma1 = overall_ma1[1:288]
 ins_times = overall_time[1:288]
 
 # Baselines computed from previous implementation
-baseline_output = read_csv("testdata/pgram_ground.csv", show_col_types=FALSE)
+baseline_pgram = read_csv("testdata/pgram_ground.csv", show_col_types=FALSE)
+baseline_metrics = read_csv("testdata/metrics_ground.csv", show_col_types=FALSE)
