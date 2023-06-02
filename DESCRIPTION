@@ -3,6 +3,10 @@ Title: Calculating the novel Glucose Color Index Metric for Continuous Glucose M
 Version: 0.0.0.9000
 Authors@R: 
     person("Joseph", "Sartini", , "jsartin1@jh.edu", role = c("aut", "cre"))
+Depends: 
+  dplyr,
+  magrittr,
+  readr
 Description: This package facilitates seamless calculation of the log-periodogram 
   for full continuous glucose monitor (CGM) data wear periods, providing reasonable
   setting defaults. These variance decompositions can then be used in the calculation 
@@ -14,3 +18,6 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
