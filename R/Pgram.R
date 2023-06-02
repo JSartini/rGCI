@@ -30,7 +30,7 @@ default_pgram <- function(){
 #' required, and a set of reasonable defaults is provided by the default_pgram()
 #' function.
 #'
-#' @return Periodogram, list with entries "pgram" - vector of log-periodogram values,
+#' @return list with entries "pgram" - vector of log-periodogram values,
 #' "freqs" - vector of frequencies (min ^-1) corresponding to those values
 #'
 #' @export
