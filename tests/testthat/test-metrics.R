@@ -7,7 +7,7 @@ test_that("6DF representation matches previous implementation: AR(1)", {
   names(baseline) = colnames(baseline_metrics)[3:(ncol(baseline_metrics)-1)]
 
   fit = pgram(full_data_ar1, full_times)
-  metrics = linear_approx(fit[["pgram"]], fit[["freqs"]])
+  metrics = linear_approx(fit)
 
   # Accommodates for frequency unit shift in old implementation
   metrics[c(1,3,5)] = metrics[c(1,3,5)]/15
@@ -24,7 +24,7 @@ test_that("6DF representation matches previous implementation: MA(1)", {
   names(baseline) = colnames(baseline_metrics)[3:(ncol(baseline_metrics)-1)]
 
   fit = pgram(full_data_ma1, full_times)
-  metrics = linear_approx(fit[["pgram"]], fit[["freqs"]])
+  metrics = linear_approx(fit)
 
   # Accommodates for frequency unit shift in old implementation
   metrics[c(1,3,5)] = metrics[c(1,3,5)]/15
@@ -40,7 +40,7 @@ test_that("GCI matches previous implementation: AR(1)", {
     unname()
 
   fit = pgram(full_data_ar1, full_times)
-  metrics = linear_approx(fit[["pgram"]], fit[["freqs"]])
+  metrics = linear_approx(fit)
   # Accommodates for frequency unit shift in old implementation
   metrics[c(1,3,5)] = metrics[c(1,3,5)]/15
   calculated = calculate_GCI(metrics)

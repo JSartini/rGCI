@@ -87,7 +87,8 @@ pad_for_pgram <- function(ts, arg, options, consts, interval){
 
 #' Calculate CGM periodogram for a given time series and argument
 #'
-#' @details This function calculates the CGM log-periodogram using appropriate settings for this type of data
+#' @details This function calculates the CGM log-periodogram using appropriate
+#' settings for this type of data
 #'
 #' @param ts, numeric time series of CGM data as a numeric vector
 #' @param arg, POSIXct vector of timestamps for CGM time series
@@ -99,8 +100,8 @@ pad_for_pgram <- function(ts, arg, options, consts, interval){
 #' required, and a set of reasonable defaults is provided by the default_pgram()
 #' function.
 #'
-#' @return list with entries "pgram" - vector of log-periodogram values,
-#' "freqs" - vector of frequencies (min ^-1) corresponding to those values
+#' @return "Periodogram" object with entries "lpgram" - vector of log-periodogram
+#'  values, "freqs" - vector of frequencies (min ^-1) corresponding to those values
 #'
 #' @export
 #'
@@ -120,5 +121,5 @@ pgram <- function(ts, arg, options = default_pgram()){
   analysis = spec.pgram(spec_data, spans = options$spans,
                         demean = TRUE, plot = FALSE)
 
-  return(list(pgram = log(analysis$spec), freqs = analysis$freq/interval))
+  return(new_pgram(log(analysis$spec), analysis$freq/interval))
 }

@@ -26,17 +26,18 @@ slope_midpoint <- function(subset_df, freq_mid){
 #' returns the slopes and midpoints to form a 6-df representation of the full
 #' periodogram
 #'
-#' @param pgram, numeric vector of log-periodogram values
-#' @param freqs, numeric vector of frequencies (min^-1) corresponding to
-#' the periodogram values
+#' @param pgram_obj, object containing a log-transformed periodogram and its
+#' frequency arguments
 #'
 #' @return pgram_summary, named vector containing the desired 6 degree of freedom
 #' representation
 #'
 #' @export
 #'
-linear_approx <- function(pgram, freqs){
-  fit_df = data.frame(spectra = pgram, frequencies = freqs, periods = 1/freqs)
+linear_approx <- function(pgram_obj){
+  fit_df = data.frame(spectra = pgram_obj$lpgram,
+                      frequencies = pgram_obj$freqs,
+                      periods = 1/pgram_obj$freqs)
 
   long_idxs = which(fit_df$periods >= 1440)
   long_df = fit_df[long_idxs,]

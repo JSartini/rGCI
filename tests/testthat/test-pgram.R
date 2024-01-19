@@ -3,7 +3,7 @@ test_that("log-periodogram matches previous implementation: AR(1)", {
     filter(ID == "full_ar") %>%
     pull(Pgram)
 
-  expect_equal(baseline, pgram(full_data_ar1, full_times)[["pgram"]])
+  expect_equal(baseline, pgram(full_data_ar1, full_times)$lpgram)
 })
 
 test_that("log-periodogram matches previous implementation: MA(1)", {
@@ -11,7 +11,7 @@ test_that("log-periodogram matches previous implementation: MA(1)", {
     filter(ID == "full_ma") %>%
     pull(Pgram)
 
-  expect_equal(baseline, pgram(full_data_ma1, full_times)[["pgram"]])
+  expect_equal(baseline, pgram(full_data_ma1, full_times)$lpgram)
 })
 
 test_that("gaps in data throw error from pad_for_pgram: AR(1)", {
