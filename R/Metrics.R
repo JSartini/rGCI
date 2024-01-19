@@ -1,3 +1,24 @@
+#' Fit disjoint linear model portion and return slope/midpoint components
+#'
+#' @details Helper function to fit a linear model then extract the slope and
+#' midpoint parameters
+#'
+#' @param subset_df, dataframe with subset of periodogram data corresponding to
+#' a particular frequency band
+#' @param freq_mid, frequency argument at which to evaluate the model to estimate
+#' the periodogram midpoint over the given frequency band
+#'
+#' @return param_list, named list of summary parameters for the linear model over
+#' the frequency band of interest
+#'
+slope_midpoint <- function(subset_df, freq_mid){
+  sub_fit = lm(spectra ~ frequencies, data = subset_df)
+  s = sub_fit$coefficients[2]
+  m = predict(sub_fit, newdata = data.frame(frequencies = c(freq_mid)))
+  param_list = list(Slope = s, Midpoint = m)
+  return(param_list)
+}
+
 #' Calculate 6 degree of freedom representation of a log-periodogram
 #'
 #' @details Fits disjoint piece-wise linear models over 3 periodicity bands of
@@ -16,31 +37,24 @@
 #'
 linear_approx <- function(pgram, freqs){
   fit_df = data.frame(spectra = pgram, frequencies = freqs, periods = 1/freqs)
+
   long_idxs = which(fit_df$periods >= 1440)
+  long_df = fit_df[long_idxs,]
+  long_period_params = slope_midpoint(long_df, mean(long_df$frequencies))
+
   short_idxs = which(fit_df$periods < 150)
+  short_df = fit_df[short_idxs,]
+  short_period_params = slope_midpoint(short_df, mean(short_df$frequencies))
+
   int_idxs = c(long_idxs[length(long_idxs)],
                which(fit_df$periods < 1440 & fit_df$periods >= 150),
                short_idxs[1])
+  int_df = fit_df[int_idxs,]
+  int_period_params = slope_midpoint(int_df, mean(int_df$frequencies))
 
-  long_inputs = fit_df[long_idxs,]
-  mid = mean(long_inputs$frequencies)
-  long_fit = lm(spectra ~ frequencies, data = long_inputs)
-  lslope = long_fit$coefficients[2]
-  lmidpoint = predict(long_fit, newdata = data.frame(frequencies = c(mid)))
-
-  med_inputs = fit_df[int_idxs,]
-  mid = median(med_inputs$frequencies)
-  med_fit = lm(spectra ~ frequencies, data = med_inputs)
-  islope = med_fit$coefficients[2]
-  imidpoint = predict(med_fit, newdata = data.frame(frequencies = c(mid)))
-
-  short_inputs = fit_df[short_idxs,]
-  mid = mean(short_inputs$frequencies)
-  short_fit = lm(spectra ~ frequencies, data = short_inputs)
-  sslope = short_fit$coefficients[2]
-  smidpoint = predict(short_fit, newdata = data.frame(frequencies = c(mid)))
-
-  output = unname(c(lslope, lmidpoint, islope, imidpoint, sslope, smidpoint))
+  output = unname(c(long_period_params$Slope, long_period_params$Midpoint,
+                    int_period_params$Slope, int_period_params$Midpoint,
+                    short_period_params$Slope, short_period_params$Midpoint))
   names(output) = c("long_slope", "long_midpoint", "int_slope", "int_midpoint",
                     "short_slope", "short_midpoint")
   return(output)

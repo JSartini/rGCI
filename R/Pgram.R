@@ -16,6 +16,75 @@ default_pgram <- function(){
               spans = c(3,5,7)))
 }
 
+#' Produce required constants for periodogram calculation
+#'
+#' @details Calculates expected number of observations per-hour, per-wear, and
+#' per-day
+#'
+#' @param interval, time (in minutes) between CGM observations
+#' @param wear_length, number of days users are expected to wear the device, set
+#' by default to 14
+#'
+#' @return constant_list, named list of the required constants
+#'
+calc_constants <- function(interval, wear_length = 14){
+  ph = 60/interval
+  pd = ph*24
+  pw = pd*wear_length
+  constant_list = list(per_day = pd, per_wear = pw)
+  return(constant_list)
+}
+
+#' Pad the CGM time series with zeros
+#'
+#' @details Ensures that glucose observations are appropriately and evenly
+#' spaced, accounting for missing data within and potentially at the end of the
+#' time series. Required step for accurate estimates of the spectral density
+#' from the periodogram.
+#'
+#' @param ts, numeric time series of CGM data as a numeric vector
+#' @param arg, POSIXct vector of timestamps for CGM time series
+#' @param options, list containing relevant settings for periodogram calculation,
+#' including number of expected days in the data ("days"), maximum gap in the
+#' data allowable ("maxgap", in days), minimum data for analysis ("mindata" in days),
+#' amount of start and end data to trim ("strim" and "etrim" both in days),
+#' and odd-value spans of Daniel smoothing kernels ("spans")
+#' @param consts, list of observation frequency constants
+#' @param interval, time (in minutes) between CGM observations
+#'
+#' @return spec_data, vector containing the original CGM time series with
+#' appropriate zero-padding (assuming sufficient data and continuity)
+#'
+pad_for_pgram <- function(ts, arg, options, consts, interval){
+  diffs = as.numeric(difftime(arg[-1], arg[-length(arg)], units = 'mins'))
+
+  # Pad the data
+  num_add = c(1, (diffs %/% interval)) - 1
+  indices = which(num_add > 0)
+  for_analysis = ts
+
+  for(idx in indices){
+    # Too large of gaps can result in biased estimates
+    if(num_add[idx] > options$maxgap*consts$per_day){
+      stop("Excessively long gap found in the data")
+    }
+
+    for_analysis = append(for_analysis, rep(0, num_add[idx]),
+                          after = idx-1)
+  }
+
+  # If there is not enough data, the longer signals will be more difficult to discern
+  if(length(for_analysis) < (options$mindata/options$days)*consts$per_wear){
+    stop("Insufficient data length")
+  }
+
+  spec_data = rep(0, consts$per_wear)
+  spec_data[1:length(for_analysis)] = for_analysis
+
+  return(spec_data)
+}
+
+
 #' Calculate CGM periodogram for a given time series and argument
 #'
 #' @details This function calculates the CGM log-periodogram using appropriate settings for this type of data
@@ -37,51 +106,19 @@ default_pgram <- function(){
 #'
 pgram <- function(ts, arg, options = default_pgram()){
   # Determine frequency of observation
-  pos_times = c(5,15)
+  pos_times = c(1,5,15)
   differ = as.numeric(difftime(arg[2], arg[1], units = "mins"))
-  interval = which.min(abs(differ-c(5, 15)))
+  interval = which.min(abs(differ-pos_times))
   interval = pos_times[interval]
 
-  # Constants
-  per_hour = 60/interval
-  req_num = 14*24*per_hour
-  daily_spec = per_hour*24
-  hourly_spec = per_hour
+  consts = calc_constants(interval, options$days)
 
-  difference = as.numeric(difftime(arg[-1], arg[-length(arg)], units = 'mins'))
+  spec_data = pad_for_pgram(ts, arg, options, consts, interval)
+  # Trim for sensor warmup and degradation
+  spec_data = spec_data[(consts$per_day+1):(consts$per_wear -consts$per_day)]
 
-  # Pad the data
-  num_add = c(1, (difference %/% interval)) - 1
-  indices = which(num_add > 0)
-  for_analysis = ts
-
-  for(idx in indices){
-    # Too large of gaps can result in biased estimates
-    if(num_add[idx] > options[["maxgap"]]*daily_spec){
-      stop("Excessively long gap found in the data")
-    }
-
-    for_analysis = append(for_analysis, rep(0, num_add[idx]),
-                          after = idx-1)
-  }
-
-  # If there is not enough data, the longer signals will be more difficult to discern
-  if(length(for_analysis) < (options[["mindata"]]/options[["days"]])*req_num){
-    stop("Insufficient data length")
-  }
-
-  spec_data = rep(0, req_num)
-  spec_data[1:length(for_analysis)] = for_analysis
-
-  # Trim data to avoid issues with sensor warmup and degradation
-  spec_data = spec_data[(daily_spec+1):(req_num - daily_spec)]
-
-  # Calculate relevant metrics - spline regression coefficients
-  analysis = spec.pgram(spec_data, spans = options[["spans"]],
+  analysis = spec.pgram(spec_data, spans = options$spans,
                         demean = TRUE, plot = FALSE)
 
-  pgram = log(analysis$spec)
-  freqs = analysis$freq/interval
-
-  return(list(pgram = pgram, freqs = freqs))
+  return(list(pgram = log(analysis$spec), freqs = analysis$freq/interval))
 }
