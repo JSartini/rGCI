@@ -15,7 +15,7 @@ slope_midpoint <- function(subset_df, freq_mid){
   sub_fit = lm(spectra ~ frequencies, data = subset_df)
   s = sub_fit$coefficients[2]
   m = predict(sub_fit, newdata = data.frame(frequencies = c(freq_mid)))
-  param_list = list(Slope = s, Midpoint = m)
+  param_list = list(Slope = unname(s), Midpoint = unname(m))
   return(param_list)
 }
 
