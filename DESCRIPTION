@@ -1,5 +1,5 @@
 Package: rGCI
-Title: Calculating the novel Glucose Color Index Metric for Continuous Glucose Monitor Data
+Title: Calculating the novel Glucose Color Index (GCI) metric for continuous glucose monitoring data
 Version: 0.0.0.9000
 Authors@R: 
     person("Joseph", "Sartini", , "jsartin1@jh.edu", role = c("aut", "cre"))
@@ -8,14 +8,17 @@ Depends:
     magrittr,
     R (>= 2.10),
     readr
-Description: This package facilitates seamless calculation of the log-periodogram 
+Description: This package facilitates calculation of the log-periodogram 
   for full continuous glucose monitor (CGM) data wear periods, providing reasonable
-  setting defaults. These variance decompositions can then be used in the calculation 
-  of a color spectrum metric, the GCI, which is a weighting of disjoint linear model
-  parameters fit to the log-periodogram itself. The weighting here is derived 
-  using a cohort of N=141 individuals with repeat CGM wears, a baseline and 
-  3-month follow-up. This weighting is provided as a default within the package.
-License: MIT + file LICENSE
+  defaults for estimation hyper-parameters. These variance decompositions can 
+  then be used in the calculation of a color spectrum metric, the GCI, which is 
+  a weighting of disjoint linear model parameters fit to the log-periodogram itself. 
+  The weighting here is derived using a cohort of N=141 individuals with repeat 
+  CGM wears, a baseline and 3-month follow-up. This weighting is provided as a 
+  default within the package. Alternative, more integrated functionality for directly
+  calculating GCI from vector or long-form dataframes, using the same defaults,
+  is provided.
+License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3

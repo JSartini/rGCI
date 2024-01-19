@@ -18,6 +18,6 @@ LineEndingConversion: Posix
 
 BuildType: Package
 PackageUseDevtools: Yes
-PackagePath: /Users/josephsartini/Projects/rGCI
+PackagePath: /Users/josephsartini/Work/Projects/rGCI
 PackageInstallArgs: --no-multiarch --with-keep.source
 PackageRoxygenize: rd,collate,namespace
