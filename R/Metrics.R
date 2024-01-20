@@ -53,12 +53,7 @@ linear_approx <- function(pgram_obj){
   int_df = fit_df[int_idxs,]
   int_period_params = slope_midpoint(int_df, mean(int_df$frequencies))
 
-  output = unname(c(long_period_params$Slope, long_period_params$Midpoint,
-                    int_period_params$Slope, int_period_params$Midpoint,
-                    short_period_params$Slope, short_period_params$Midpoint))
-  names(output) = c("long_slope", "long_midpoint", "int_slope", "int_midpoint",
-                    "short_slope", "short_midpoint")
-  return(output)
+  return(new_6DF(long_period_params, int_period_params, short_period_params))
 }
 
 

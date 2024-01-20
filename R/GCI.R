@@ -20,8 +20,8 @@ default_weights <- function(){
 #' convention for these metrics, which is period_metric for periods of long, int,
 #' and short, metrics of slope and intercept.
 #'
-#' @param linear_approx, numeric vector containing 6-DF representation of
-#' log-periodogram
+#' @param linear_approx, object of class "6DF_summary" containing 6-DF
+#' representation of log-periodogram
 #' @param weights, numeric vector of weights used to form the GCI linear combination
 #' @param means, numeric vector of mean values for the 6 degree of freedom
 #' approximation, subtracted away before calculation of GCI
@@ -48,7 +48,7 @@ calculate_GCI <- function(linear_approx, weights = default_weights(),
 
   result = 0
   for(dfmet in names(linear_approx)){
-    result = result + (linear_approx[dfmet] - means[dfmet])/stddevs[dfmet] * weights[dfmet]
+    result = result + (linear_approx[[dfmet]] - means[dfmet])/stddevs[dfmet] * weights[dfmet]
   }
   return(unname(result))
 }

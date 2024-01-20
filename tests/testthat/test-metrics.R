@@ -6,13 +6,22 @@ test_that("6DF representation matches previous implementation: AR(1)", {
 
   names(baseline) = colnames(baseline_metrics)[3:(ncol(baseline_metrics)-1)]
 
+  expected = new_6DF(list(Slope = unname(baseline["long_slope"]),
+                          Midpoint = unname(baseline["long_midpoint"])),
+                     list(Slope = unname(baseline["int_slope"]),
+                          Midpoint = unname(baseline["int_midpoint"])),
+                     list(Slope = unname(baseline["short_slope"]),
+                          Midpoint = unname(baseline["short_midpoint"])))
+
   fit = pgram(full_data_ar1, full_times)
   metrics = linear_approx(fit)
 
   # Accommodates for frequency unit shift in old implementation
-  metrics[c(1,3,5)] = metrics[c(1,3,5)]/15
+  metrics$long_slope = metrics$long_slope/15
+  metrics$int_slope = metrics$int_slope/15
+  metrics$short_slope = metrics$short_slope/15
 
-  expect_equal(metrics, baseline)
+  expect_equal(metrics, expected)
 })
 
 test_that("6DF representation matches previous implementation: MA(1)", {
@@ -23,13 +32,22 @@ test_that("6DF representation matches previous implementation: MA(1)", {
 
   names(baseline) = colnames(baseline_metrics)[3:(ncol(baseline_metrics)-1)]
 
+  expected = new_6DF(list(Slope = unname(baseline["long_slope"]),
+                          Midpoint = unname(baseline["long_midpoint"])),
+                     list(Slope = unname(baseline["int_slope"]),
+                          Midpoint = unname(baseline["int_midpoint"])),
+                     list(Slope = unname(baseline["short_slope"]),
+                          Midpoint = unname(baseline["short_midpoint"])))
+
   fit = pgram(full_data_ma1, full_times)
   metrics = linear_approx(fit)
 
   # Accommodates for frequency unit shift in old implementation
-  metrics[c(1,3,5)] = metrics[c(1,3,5)]/15
+  metrics$long_slope = metrics$long_slope/15
+  metrics$int_slope = metrics$int_slope/15
+  metrics$short_slope = metrics$short_slope/15
 
-  expect_equal(metrics, baseline)
+  expect_equal(metrics, expected)
 })
 
 test_that("GCI matches previous implementation: AR(1)", {
@@ -42,7 +60,9 @@ test_that("GCI matches previous implementation: AR(1)", {
   fit = pgram(full_data_ar1, full_times)
   metrics = linear_approx(fit)
   # Accommodates for frequency unit shift in old implementation
-  metrics[c(1,3,5)] = metrics[c(1,3,5)]/15
+  metrics$long_slope = metrics$long_slope/15
+  metrics$int_slope = metrics$int_slope/15
+  metrics$short_slope = metrics$short_slope/15
   calculated = calculate_GCI(metrics)
 
   expect_equal(calculated, baseline)
