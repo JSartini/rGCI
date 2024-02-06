@@ -3,3 +3,4 @@
 .Rbuildignore
 .DS_Store
 man
+docs

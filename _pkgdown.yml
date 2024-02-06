@@ -1,0 +1,17 @@
+url: ~
+template:
+  bootstrap: 5
+  bootswatch: simplex
+  bslib:
+    pkgdown-nav-height: 100px
+  theme: breeze-dark
+navbar:
+  structure:
+    left: [intro, reference, news]
+    right: [search, github]
+footer:
+  structure:
+    left: built_with
+    right: legal
+  components:
+    legal: Provided without **any warranty**
